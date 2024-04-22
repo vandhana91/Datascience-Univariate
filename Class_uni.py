@@ -1,0 +1,44 @@
+class Univariate():
+    import pandas as pd
+    import numpy as np
+   
+    def univariate(dataset,quan):
+        
+        descriptive = pd.DataFrame(index = ['Mean','Median','Mode','Q1:25%','Q2:50%','Q3:75%','99%','Q4:100%',
+                                       'IQR','1.5rule','Lesser','Greater','Min','Max'],
+                               columns = quan)
+        for columnname in quan:
+            descriptive[columnname]['Mean'] = dataset[columnname].mean()
+            descriptive[columnname]['Median'] = dataset[columnname].median()
+            descriptive[columnname]['Mode'] = dataset[columnname].mode()[0]
+            descriptive[columnname]['Q1:25%'] = dataset.describe()[columnname]['25%']
+            descriptive[columnname]['Q2:50%'] = dataset.describe()[columnname]['50%']
+            descriptive[columnname]['Q3:75%'] = dataset.describe()[columnname]['75%']
+            descriptive[columnname]['99%'] = np.percentile(dataset[columnname],99)
+            descriptive[columnname]['Q4:100%'] = dataset.describe()[columnname]['max']
+            descriptive[columnname]['IQR']= descriptive[columnname]['Q3:75%'] - descriptive[columnname]['Q1:25%']
+            descriptive[columnname]['1.5rule'] = 1.5 * descriptive[columnname]['IQR']
+            descriptive[columnname]['Lesser'] = descriptive[columnname]['Q1:25%'] - descriptive[columnname]['1.5rule']
+            descriptive[columnname]['Greater'] = descriptive[columnname]['Q3:75%'] + descriptive[columnname]['1.5rule']
+            descriptive[columnname]['Min'] = dataset[columnname].min()
+            descriptive[columnname]['Max'] = dataset[columnname].max()
+        return descriptive
+
+    def freqtable(columnname,dataset):
+        
+        freqtable = pd.DataFrame(columns = ['Unique Values','Frequency','Relative Frequency','Cumsum'])
+        freqtable['Unique Values'] = dataset[columnname].value_counts().index
+        freqtable['Frequency'] = dataset[columnname].value_counts().values
+        freqtable['Relative Frequency'] = freqtable['Frequency']/103
+        freqtable['Cumsum'] = freqtable['Relative Frequency'].cumsum()
+        return freqtable
+
+    def find_outlier():
+        descriptive = univariate()
+        lesser = []
+        greater = []
+        for columnname in quan:
+            if (descriptive[columnname]['Min'] < descriptive[columnname]['Lesser']):
+                lesser.append(columnname)
+            if (descriptive[columnname]['Max'] > descriptive[columnname]['Greater']):
+                greater.append(columnname)
