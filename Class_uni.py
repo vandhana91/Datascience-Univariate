@@ -40,12 +40,4 @@ class Univariate():
         freqtable['Cumsum'] = freqtable['Relative Frequency'].cumsum()
         return freqtable
 
-    def find_outlier():
-        descriptive = univariate()
-        lesser = []
-        greater = []
-        for columnname in quan:
-            if (descriptive[columnname]['Min'] < descriptive[columnname]['Lesser']):
-                lesser.append(columnname)
-            if (descriptive[columnname]['Max'] > descriptive[columnname]['Greater']):
-                greater.append(columnname)
+    
